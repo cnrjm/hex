@@ -235,9 +235,21 @@ svg {
   pointer-events: none;
 }
 
+.flip {
+  transform: rotateY(180deg);
+  transition: transform 0.5s;
+}
+
+.flip[data-state="correct"],
+.flip[data-state="wrong-location"],
+.flip[data-state="wrong"] {
+  transform: rotateY(0deg);
+}
+
 [data-state="correct"] {
   /* Style for correct letters in the correct place (e.g., green) */
   color: green;
+  background-color: #000;
 }
 
 [data-state="wrong-location"] {
@@ -248,4 +260,19 @@ svg {
 [data-state="wrong"] {
   /* Style for completely incorrect letters (e.g., red) */
   color: red;
+}
+
+[data-key].correct {
+  background-color: green; /* Change this to your desired color */
+  color: white;
+}
+
+[data-key].wrong-location {
+  background-color: yellow; /* Change this to your desired color */
+  color: black;
+}
+
+[data-key].wrong {
+  background-color: red; /* Change this to your desired color */
+  color: white;
 }

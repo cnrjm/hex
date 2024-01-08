@@ -696,18 +696,23 @@ function getRandomColour() {
   document.getElementById('colourName').textContent = randomColourName.toUpperCase();
   document.getElementById('colourCode').textContent = randomColourCode;
   document.getElementById('colourBox').style.backgroundColor = randomColourCode;
+
+  return randomColourCode.substring(1).toLowerCase(); // Extract and return the correct answer in lowercase
 }
 
-getRandomColour();
-window.onload = getRandomColour;
+window.onload = function () {
+  const targetWord = getRandomColour();
+  console.log("Correct Answer:", targetWord);
 
-const WORD_LENGTH = 6
-const FLIP_ANIMATION_DURATION = 500
-const DANCE_ANIMATION_DURATION = 500
-const keyboard = document.querySelector("[data-keyboard]")
-const alertContainer = document.querySelector("[data-alert-container]")
-const guessGrid = document.querySelector("[data-guess-grid]")
-const targetWord = Object.values(colours).map(hex => hex.slice(1));
+  // Rest of your code...
+  const WORD_LENGTH = 6;
+  const FLIP_ANIMATION_DURATION = 500;
+  const DANCE_ANIMATION_DURATION = 500;
+  const keyboard = document.querySelector("[data-keyboard]");
+  const alertContainer = document.querySelector("[data-alert-container]");
+  const guessGrid = document.querySelector("[data-guess-grid]");
+
+console.log("Correct Answer:", targetWord);
 
 startInteraction()
 
@@ -783,32 +788,47 @@ function submitGuess() {
 
   const guess = activeTiles.reduce((word, tile) => {
     return word + tile.dataset.letter;
-  }, "");
+  }, "").toLowerCase(); // Convert the guess to lowercase
 
   const targetHexCode = document.getElementById('colourCode').textContent.toLowerCase();
 
   // Remove "#" from the target hex code for comparison
   const cleanedTargetHexCode = targetHexCode.replace("#", "");
 
-  if (guess.toLowerCase() === cleanedTargetHexCode) {
+  if (guess === cleanedTargetHexCode) {
     stopInteraction();
     activeTiles.forEach((...params) => flipTile(...params, guess));
   } else {
-    showAlert("Incorrect guess");
+    provideGuessFeedback(guess, cleanedTargetHexCode);
     shakeTiles(activeTiles);
   }
+}
+
+function provideGuessFeedback(guess, target) {
+  const tiles = getActiveTiles();
+  tiles.forEach((tile, index) => {
+    const letter = tile.dataset.letter;
+
+    if (target.includes(letter)) {
+      if (target[index] === letter) {
+        tile.dataset.state = "correct";
+      } else {
+        tile.dataset.state = "wrong-location";
+      }
+    } else {
+      tile.dataset.state = "wrong";
+    }
+  });
 }
 
 function flipTile(tile, index, array, guess) {
   const letter = tile.dataset.letter;
   const key = keyboard.querySelector(`[data-key="${letter}"i]`);
 
-  setTimeout(() => {
-    tile.classList.add("flip");
-  }, (index * FLIP_ANIMATION_DURATION) / 2);
+  tile.classList.add("flip");
 
   tile.addEventListener(
-    "transitionend",
+    "animationend",
     () => {
       tile.classList.remove("flip");
 
@@ -828,7 +848,7 @@ function flipTile(tile, index, array, guess) {
 
       if (index === array.length - 1) {
         tile.addEventListener(
-          "transitionend",
+          "animationend",
           () => {
             startInteraction();
             checkWinLose(guess, array);
@@ -902,3 +922,4 @@ function danceTiles(tiles) {
     }, (index * DANCE_ANIMATION_DURATION) / 5)
   })
 }
+};
