@@ -806,6 +806,8 @@ function submitGuess() {
 
 function provideGuessFeedback(guess, target) {
   const tiles = getActiveTiles();
+  const incorrectLetters = [];
+
   tiles.forEach((tile, index) => {
     const letter = tile.dataset.letter;
 
@@ -817,6 +819,16 @@ function provideGuessFeedback(guess, target) {
       }
     } else {
       tile.dataset.state = "wrong";
+      incorrectLetters.push(letter);
+    }
+  });
+
+  // Add a class to incorrect keys on the keyboard
+  const keyboardKeys = keyboard.querySelectorAll("[data-key]");
+  keyboardKeys.forEach((key) => {
+    const keyLetter = key.dataset.key.toLowerCase();
+    if (incorrectLetters.includes(keyLetter)) {
+      key.classList.add("incorrect-key");
     }
   });
 }
@@ -826,39 +838,33 @@ function flipTile(tile, index, array, guess) {
   const key = keyboard.querySelector(`[data-key="${letter}"i]`);
 
   tile.classList.add("flip");
+  key.classList.add("flip");
 
-  tile.addEventListener(
-    "animationend",
-    () => {
+  setTimeout(() => {
+    // Check if the letter is in the correct place
+    if (targetWord[index] === letter) {
+      tile.dataset.state = "correct";
+      key.classList.add("correct");
+    } else if (targetWord.includes(letter)) {
+      // Check if the letter is correct but in the wrong place
+      tile.dataset.state = "wrong-location";
+      key.classList.add("wrong-location");
+    } else {
+      // The letter is incorrect
+      tile.dataset.state = "wrong";
+      key.classList.add("wrong");
+    }
+
+    setTimeout(() => {
       tile.classList.remove("flip");
-
-      // Check if the letter is in the correct place
-      if (targetWord[index] === letter) {
-        tile.dataset.state = "correct";
-        key.classList.add("correct");
-      } else if (targetWord.includes(letter)) {
-        // Check if the letter is correct but in the wrong place
-        tile.dataset.state = "wrong-location";
-        key.classList.add("wrong-location");
-      } else {
-        // The letter is incorrect
-        tile.dataset.state = "wrong";
-        key.classList.add("wrong");
-      }
+      key.classList.remove("flip");
 
       if (index === array.length - 1) {
-        tile.addEventListener(
-          "animationend",
-          () => {
-            startInteraction();
-            checkWinLose(guess, array);
-          },
-          { once: true }
-        );
+        startInteraction();
+        checkWinLose(guess, array);
       }
-    },
-    { once: true }
-  );
+    }, 500);
+  }, 500);
 }
 
 function getActiveTiles() {

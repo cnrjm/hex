@@ -276,3 +276,8 @@ svg {
   background-color: red; /* Change this to your desired color */
   color: white;
 }
+
+[data-key].incorrect-key {
+  background-color: #000; /* Adjust the color as needed */
+  color: #fff; /* Adjust the color as needed */
+}
