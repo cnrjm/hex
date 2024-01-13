@@ -19,6 +19,10 @@ body {
   align-content: center;
 }
 
+#colourCode {
+  color: hsl(240, 3%, 7%);;
+}
+
 #colourDisplay {
   color: #fff;
   font-size: 25px;
