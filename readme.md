@@ -8,7 +8,7 @@ A wordle clone written in html, css and vanilla javascript. Presents the user wi
 
 ## Screenshots
 
-![HEX](/img/hex1.PNG)
+[![hex1.png](https://i.postimg.cc/3NSQ33gx/hex1.png)](https://postimg.cc/QKTybG42)
 *HEX*
 
 ## Technologies Used
