@@ -929,3 +929,68 @@ function danceTiles(tiles) {
   })
 }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  const registerForm = document.getElementById('registerForm');
+  const loginForm = document.getElementById('loginForm');
+
+  registerForm.addEventListener('submit', handleRegister);
+  loginForm.addEventListener('submit', handleLogin);
+
+  function handleRegister(event) {
+    event.preventDefault();
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+
+    fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response from the server
+        if (data.success) {
+          // Registration successful, redirect to profile page
+          window.location.href = 'profile.html';
+        } else {
+          // Registration failed, show an error message
+          showAlert(data.message);
+        }
+      })
+      .catch((error) => console.error(error));
+  }
+
+  function handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response from the server
+        if (data.success) {
+          // Login successful, redirect to profile page
+          window.location.href = 'profile.html';
+        } else {
+          // Login failed, show an error message
+          showAlert(data.message);
+        }
+      })
+      .catch((error) => console.error(error));
+  }
+
+  function showAlert(message, duration = 3000) {
+    // Implement your showAlert function to display messages to the user
+    // You can use a pop-up, toast, or any other UI element for better user experience
+    console.log(message);
+
+    // For demonstration, you can use an alert
+    alert(message);
+  }
+});
